@@ -1,12 +1,9 @@
 import pdfrw
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.cidfonts import UnicodeCIDFont
-import re
+from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 
-pdfmetrics.registerFont(UnicodeCIDFont('HeiseiKakuGo-W5'))
 pdfmetrics.registerFont(TTFont('David', 'David.ttf'))
 
 # Input and output file paths
@@ -44,6 +41,69 @@ field_values = {
     'תפקיד': 'מפתח',
     'חתימה': 'דוד יצחק',
 }
+
+array_of_maps = [
+    {
+        'שנה': '2024',
+        'שם הנישום': 'משה יצחקי',
+        'מספר תיק במס הכנסה': '1  2  3  4  5  6  7  8  9',
+        'מספר תיק ניכויים': '1  2  3  4  5  6  7  8',
+        'מספר טלפון': '054  5678787',
+        'כתובת העסק': 'מקור חיים, ירושלים ת.ד 512',
+        'משרד פקיד השומה': 'משרד בע"ם',
+        'משרד פקיד השומה ניכויים': 'אחים שלי בעם',
+        'שם הצד הקשור': 'לוי יצחק בע"מ',
+        '(TIN) מספר זיהוי לצרכי מס בחו"ל': '654654654',
+        'כתובת': 'מקור חיים 54 ירושלים',
+        'מספר העסקה': '1354654654',
+        '1תיאור העסקה': 'מפתח מתכנת ברשות המיסים',
+        '2תיאור העסקה': 'מפתח מתכנת ברשות המיסים',
+        '1השיטה שננקטה': 'שיטה רגילה',
+        '2השיטה שננקטה': 'שיטה רגילה',
+        '1שיעור הרווחיות': '80000',
+        '2שיעור הרווחיות': '80000',
+        'סכום העסקה': '80000',
+        'העסקה המדווחת היא עסקה חד פעמית': '*',
+        'העסקה מסוג שירותים המוסיפים ערך נמוך': '*',
+        'העסקה מסוג שירותי שיווק': '*',
+        'העסקה מסוג שירותי הפצה': '*',
+        'קיים דיווח חקר תנאי שוק': '*',
+        'תאריך': '12/10/2024',
+        'שם': 'דוד יצחק',
+        'תפקיד': 'מפתח',
+        'חתימה': 'דוד יצחק',
+    },
+    {
+        'שנה': '2024',
+        'שם הנישום': '2משה יצחקי',
+        'מספר תיק במס הכנסה': '1  2  3  4  5  6  7  8  9',
+        'מספר תיק ניכויים': '1  2  3  4  5  6  7  8',
+        'מספר טלפון': '054  5678787',
+        'כתובת העסק': 'מקור חיים, ירושלים ת.ד 512',
+        'משרד פקיד השומה': 'משרד בע"ם',
+        'משרד פקיד השומה ניכויים': 'אחים שלי בעם',
+        'שם הצד הקשור': 'לוי יצחק בע"מ',
+        '(TIN) מספר זיהוי לצרכי מס בחו"ל': '654654654',
+        'כתובת': 'מקור חיים 54 ירושלים',
+        'מספר העסקה': '1354654654',
+        '1תיאור העסקה': 'מפתח מתכנת ברשות המיסים',
+        '2תיאור העסקה': 'מפתח מתכנת ברשות המיסים',
+        '1השיטה שננקטה': 'שיטה רגילה',
+        '2השיטה שננקטה': 'שיטה רגילה',
+        '1שיעור הרווחיות': '80000',
+        '2שיעור הרווחיות': '80000',
+        'סכום העסקה': '80000',
+        'העסקה המדווחת היא עסקה חד פעמית': '*',
+        'העסקה מסוג שירותים המוסיפים ערך נמוך': '*',
+        'העסקה מסוג שירותי שיווק': '*',
+        'העסקה מסוג שירותי הפצה': '*',
+        'קיים דיווח חקר תנאי שוק': '*',
+        'תאריך': '12/10/2024',
+        'שם': 'דוד יצחק',
+        'תפקיד': 'מפתח',
+        'חתימה': 'דוד יצחק',
+    }
+]
 
 def reverse_hebrew_text(text):
     words = text.split()
@@ -103,8 +163,12 @@ def merge_pdfs(template_path, overlay_path, output_path):
 
 # Create overlay PDF
 overlay_pdf_path = './overlay.pdf'
-create_overlay_pdf(field_values, overlay_pdf_path)
+#create_overlay_pdf(field_values, overlay_pdf_path)
 
-# Merge and output the filled PDF
-merge_pdfs(template_pdf_path, overlay_pdf_path, filled_pdf_path)
-#print('1500 שקל')
+#merge_pdfs(template_pdf_path, overlay_pdf_path, filled_pdf_path)
+
+for index, map_item in enumerate(array_of_maps, start=1):
+    overlay_pdf_path = f"./overlay_{str(index)}.pdf"
+    filled_pdf_path = f"./Filled_Service_Pages_Income_tax_itc1385_{str(index)}.pdf"
+    create_overlay_pdf(map_item, overlay_pdf_path)
+    merge_pdfs(template_pdf_path, overlay_pdf_path, filled_pdf_path)
