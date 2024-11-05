@@ -5,6 +5,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from faker import Faker
 import random
+import os
 
 
 def reverse_hebrew_text(text):
@@ -30,7 +31,7 @@ misradim = [
     "מע''מ נוף הגליל",
     "פקיד שומה עכו",
     "מע''מ עכו",
-    "יחידה ארצית לבלו ומס קניה",
+    "יחידה ארצית לבלו ומס",
     "פקיד שומה חיפה",
     "מע''מ חיפה",
     "מכס חיפה",
@@ -71,12 +72,12 @@ misradim = [
     "פקיד שומה אשקלון",
     "פקיד שומה באר שבע",
     "פקיד שומה חקירות תל אביב",
-    "פקיד שומה חקירות חיפה וצפון",
-    "פקיד שומה חקירות ירושלים ודרום",
+    "פקיד שומה חקירות חיפה",
+    "פקיד שומה חקירות ירושלים",
     "פקיד שומה חקירות מרכז",
     "הוצאה לפועל תל אביב והמרכז",
-    "הוצאה לפועל חיפה והצפון",
-    "הוצאה לפועל ירושלים והדרום",
+    "הוצאה לפועל חיפה",
+    "הוצאה לפועל ירושלים",
     "חקירות מע'מ חיפה",
     "חקירות מע''מ תל אביב",
     "חקירות מע''מ באר שבע",
@@ -86,10 +87,9 @@ misradim = [
     "הוצל'פ באר שבע",
     "מיסוי מקרקעין טבריה",
     "יחידה ארצית למאבק בפשיעה",
-    "רשות המסים בישראל אזור השרון",
+    "רשות המסים אזור השרון",
     "מיסוי מקרקעין נצרת",
     "מיסוי מקרקעין נתניה",
-    "יחידות מש~מ -מידע שירות ומשאבים מס הכנסה לפרטים הקש כפתור חץ",
     "הנהלת רשות המסים ת~א",
     "פקיד שומה ירושלים 2",
     "מיסוי מקרקעין רחובות",
@@ -106,20 +106,20 @@ misradim = [
     "הנהלת רשות המסים מס הכנסה (בית דניאל)",
     "יחידה משפטית",
     "הנהלת רשות המסים מכס ומע''מ",
-    "הנהלת רשות המסים מס הכנסה ירושלים",
+    "הנהלת מס הכנסה ירושלים",
     "ביקורת פנים- הנהלת הרשות",
     "מקצועית - הנהלת הרשות",
     "ייעוץ משפטי- הנהלת הרשות",
     "הון אנושי- הנהלת הרשות",
-    "רכש נכסים ולוג~- הנהלת הרשות",
+    "רכש נכסים ולוג- הנהלת הרשות",
     "חשבות - הנהלת הרשות",
     "אכיפה וגביה - הנהלת הרשות",
     "שומה וביקורת - הנהלת הרשות",
     "תכנון וכלכלה",
     "חקירות ומודיעין- הנהלת הרשות",
     "שירות לקוחות- הנהלת הרשות",
-    "הנהלת מס הכנסה- הנהלת הרשות",
-    "הנהלת מיסוי מקרקעין- הנהלת הרשות",
+    "מס הכנסה- הנהלת הרשות",
+    "הנהלת מיסוי מקרקעין",
 ]
 
 transactions_description = [
@@ -289,7 +289,7 @@ jobs = [
 
 
 def random_misrad():
-    random_index = random.randint(1, 98) - 1
+    random_index = random.randint(1, len(misradim) - 1) - 1
     return misradim[random_index]
 
 
@@ -370,6 +370,9 @@ def merge_pdfs(template_path, overlay_path, output_path):
         merger = pdfrw.PageMerge(page)
         merger.add(overlay_page).render()
     pdfrw.PdfWriter(output_path, trailer=template_pdf).write()
+    # Remove the overlay file
+    if os.path.exists(overlay_path):
+        os.remove(overlay_path)
 
 
 def get_job_under_22_chars():
@@ -387,7 +390,7 @@ def get_company_under_22_chars():
 
 
 def generate_pdfs():
-    for i in range(1, 2):
+    for i in range(1, 101):
         name = fake.name()
         map_item = {
             "שנה": str(fake.year()),
@@ -426,7 +429,7 @@ def generate_pdfs():
             "חתימה": name,
         }
         overlay_pdf_path = f"./overlay_{str(i)}.pdf"
-        filled_pdf_path = f"./Filled_Service_Pages_Income_tax_itc1385_{str(i)}.pdf"
+        filled_pdf_path = f"./files_generated/Filled_Income_tax_itc1385_{str(i)}.pdf"
         create_overlay_pdf(map_item, overlay_pdf_path)
         merge_pdfs(template_pdf_path, overlay_pdf_path, filled_pdf_path)
 
