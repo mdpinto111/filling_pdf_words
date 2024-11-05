@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run fill_script.py",
+      "type": "python",
+      "request": "launch",
+      "program": "C:\\Users\\shaam.T104235\\Desktop\\ocr_poc\\fill_script.py",
+      "console": "integratedTerminal"
+    }
+  ]
+}
