@@ -135,7 +135,7 @@ def generate_pdfs():
     folder_path = "files_generated"
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-    for i in range(1, 2):
+    for i in range(1, 101):
         name = fake.name()
         map_item = {
             "שנה": str(fake.year()),

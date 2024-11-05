@@ -17,19 +17,17 @@ The script uses several Python libraries, which are listed in the `requirements.
 
 ## How to Use
 
-Clone the Repository:
-git clone https://github.com/your-repo/pdf-filler-synthetic-data.git
-cd pdf-filler-synthetic-data
-
 Install Dependencies:
 pip install -r requirements.txt
 
 Run the Script:
 python fill_script.py
+python create_word.py
 
 Output:
 Filled PDF forms will be saved in the files_generated folder.
 An Excel file generated_data.xlsx will be created with all the generated data.
+Filled WORDS forms will be saved in the word_files folder.
 
 License
 This project is licensed under the MIT License. See the LICENSE file for more details.

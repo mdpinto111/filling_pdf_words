@@ -3,3 +3,4 @@ reportlab
 Faker
 pandas
 openpyxl
+python-docx
