@@ -7,6 +7,7 @@ from faker import Faker
 import random
 import os
 from data import misradim, jobs, shitot, transactions_description
+import pandas as pd
 
 
 def reverse_hebrew_text(text):
@@ -84,11 +85,17 @@ def create_overlay_pdf(field_values, overlay_path):
     c.drawString(200, 440, reverse_hebrew_text(field_values.get("2שיעור הרווחיות")))
     c.drawString(200, 420, reverse_hebrew_text(field_values.get("סכום העסקה")))
     c.setFont("David", 11)  # Set font to 'David' with size 12
-    c.drawString(95 if random.choice([True, False]) else 130, 380, "x")
-    c.drawString(95 if random.choice([True, False]) else 130, 356, "x")
-    c.drawString(95 if random.choice([True, False]) else 130, 334, "x")
-    c.drawString(95 if random.choice([True, False]) else 130, 313, "x")
-    c.drawString(95 if random.choice([True, False]) else 130, 292, "x")
+    c.drawString(
+        130 if field_values.get("העסקה המדווחת היא עסקה חד פעמית") else 95, 380, "x"
+    )
+    c.drawString(
+        130 if field_values.get("העסקה מסוג שירותים המוסיפים ערך נמוך") else 95,
+        356,
+        "x",
+    )
+    c.drawString(130 if field_values.get("העסקה מסוג שירותי שיווק") else 95, 334, "x")
+    c.drawString(130 if field_values.get("העסקה מסוג שירותי הפצה") else 95, 313, "x")
+    c.drawString(130 if field_values.get("קיים דיווח חקר תנאי שוק") else 95, 292, "x")
     c.setFont("David", 12)  # Set font to 'David' with size 12
     c.drawString(450, 190, field_values.get("תאריך", ""))
     c.drawString(330, 190, reverse_hebrew_text(field_values.get("שם")))
@@ -124,10 +131,11 @@ def get_company_under_22_chars():
 
 
 def generate_pdfs():
+    data = []
     folder_path = "files_generated"
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-    for i in range(1, 101):
+    for i in range(1, 2):
         name = fake.name()
         map_item = {
             "שנה": str(fake.year()),
@@ -155,20 +163,26 @@ def generate_pdfs():
             "1שיעור הרווחיות": str(fake.random_int(min=10000, max=100000)),
             "2שיעור הרווחיות": str(fake.random_int(min=10000, max=100000)),
             "סכום העסקה": str(fake.random_int(min=50000, max=200000)),
-            "העסקה המדווחת היא עסקה חד פעמית": "x",
-            "העסקה מסוג שירותים המוסיפים ערך נמוך": "x",
-            "העסקה מסוג שירותי שיווק": "x",
-            "העסקה מסוג שירותי הפצה": "x",
-            "קיים דיווח חקר תנאי שוק": "x",
+            "העסקה המדווחת היא עסקה חד פעמית": random.choice([True, False]),
+            "העסקה מסוג שירותים המוסיפים ערך נמוך": random.choice([True, False]),
+            "העסקה מסוג שירותי שיווק": random.choice([True, False]),
+            "העסקה מסוג שירותי הפצה": random.choice([True, False]),
+            "קיים דיווח חקר תנאי שוק": random.choice([True, False]),
             "תאריך": fake.date(pattern="%d/%m/%Y"),
             "שם": name,
             "תפקיד": get_job_under_22_chars(),
             "חתימה": name,
         }
+        data.append(map_item)
         overlay_pdf_path = f"./overlay_{str(i)}.pdf"
         filled_pdf_path = f"./files_generated/Filled_Income_tax_itc1385_{str(i)}.pdf"
         create_overlay_pdf(map_item, overlay_pdf_path)
         merge_pdfs(template_pdf_path, overlay_pdf_path, filled_pdf_path)
+    # Convert the data to a DataFrame
+    df = pd.DataFrame(data)
+
+    # Save the DataFrame to an Excel file
+    df.to_excel("generated_data.xlsx", index=False, engine="openpyxl")
 
 
 generate_pdfs()
