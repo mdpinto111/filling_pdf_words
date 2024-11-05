@@ -4,7 +4,6 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from faker import Faker
-import json
 import random
 
 
@@ -311,6 +310,7 @@ def random_shita():
 
 # Initialize the Faker object with Hebrew locale
 fake = Faker("he_IL")
+fake_english = Faker("en_US")
 
 pdfmetrics.registerFont(TTFont("David", "David.ttf"))
 
@@ -329,11 +329,13 @@ def create_overlay_pdf(field_values, overlay_path):
     c.setFont("David", 11)  # Set font to 'David' with size 12
     c.drawString(400, 675, reverse_hebrew_text(field_values.get("שם הנישום")))
     c.drawString(350, 650, reverse_hebrew_text(field_values.get("כתובת העסק")))
-    c.drawString(145, 650, reverse_hebrew_text(field_values.get("משרד פקיד השומה")))
+    c.setFont("David", 9)  # Set font to 'David' with size 12
+    c.drawString(152, 650, reverse_hebrew_text(field_values.get("משרד פקיד השומה")))
     c.drawString(
-        30, 650, reverse_hebrew_text(field_values.get("משרד פקיד השומה ניכויים"))
+        35, 650, reverse_hebrew_text(field_values.get("משרד פקיד השומה ניכויים"))
     )
-    c.drawString(450, 600, reverse_hebrew_text(field_values.get("שם הצד הקשור")))
+    c.setFont("David", 11)  # Set font to 'David' with size 12
+    c.drawString(430, 600, field_values.get("שם הצד הקשור"))
     c.drawString(280, 600, field_values.get('(TIN) מספר זיהוי לצרכי מס בחו"ל'))
     c.drawString(80, 600, reverse_hebrew_text(field_values.get("כתובת")))
     c.setFont("David", 12)  # Set font to 'David' with size 12
@@ -348,15 +350,15 @@ def create_overlay_pdf(field_values, overlay_path):
     c.drawString(200, 440, reverse_hebrew_text(field_values.get("2שיעור הרווחיות")))
     c.drawString(200, 420, reverse_hebrew_text(field_values.get("סכום העסקה")))
     c.setFont("David", 11)  # Set font to 'David' with size 12
-    c.drawString(129, 380, "x")
-    c.drawString(129, 355, "x")
-    c.drawString(129, 332, "x")
-    c.drawString(129, 311, "x")
-    c.drawString(129, 290, "x")
+    c.drawString(95 if random.choice([True, False]) else 130, 380, "x")
+    c.drawString(95 if random.choice([True, False]) else 130, 356, "x")
+    c.drawString(95 if random.choice([True, False]) else 130, 334, "x")
+    c.drawString(95 if random.choice([True, False]) else 130, 313, "x")
+    c.drawString(95 if random.choice([True, False]) else 130, 292, "x")
     c.setFont("David", 12)  # Set font to 'David' with size 12
     c.drawString(450, 190, field_values.get("תאריך", ""))
     c.drawString(330, 190, reverse_hebrew_text(field_values.get("שם")))
-    c.drawString(180, 190, reverse_hebrew_text(field_values.get("תפקיד")))
+    c.drawString(165, 190, field_values.get("תפקיד"))
     c.drawString(70, 190, reverse_hebrew_text(field_values.get("חתימה")))
     c.save()
 
@@ -370,10 +372,23 @@ def merge_pdfs(template_path, overlay_path, output_path):
     pdfrw.PdfWriter(output_path, trailer=template_pdf).write()
 
 
+def get_job_under_22_chars():
+    while True:
+        job = fake_english.job()
+        if len(job) <= 22:
+            return job
+
+
+def get_company_under_22_chars():
+    while True:
+        company = fake_english.company()
+        if len(company) <= 22:
+            return company
+
+
 def generate_pdfs():
     for i in range(1, 2):
         name = fake.name()
-        company_name = fake.company()
         map_item = {
             "שנה": str(fake.year()),
             "שם הנישום": name,
@@ -387,7 +402,7 @@ def generate_pdfs():
             "כתובת העסק": fake.address(),
             "משרד פקיד השומה": random_misrad(),
             "משרד פקיד השומה ניכויים": random_misrad(),
-            "שם הצד הקשור": company_name,
+            "שם הצד הקשור": get_company_under_22_chars(),
             '(TIN) מספר זיהוי לצרכי מס בחו"ל': " ".join(
                 str(fake.random_number(digits=9, fix_len=True))
             ),
@@ -407,7 +422,7 @@ def generate_pdfs():
             "קיים דיווח חקר תנאי שוק": "x",
             "תאריך": fake.date(pattern="%d/%m/%Y"),
             "שם": name,
-            "תפקיד": random_job(),
+            "תפקיד": get_job_under_22_chars(),
             "חתימה": name,
         }
         overlay_pdf_path = f"./overlay_{str(i)}.pdf"
