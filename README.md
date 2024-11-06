@@ -21,8 +21,11 @@ Install Dependencies:
 pip install -r requirements.txt
 
 Run the Script:
-python fill_script.py
-python create_word.py
+python fill_ichour_1385.py
+or
+python fill_ichour_tochavout_pdf
+or
+python fill_ichour_tochavout_word.py
 
 Output:
 Filled PDF forms will be saved in the files_generated folder.
