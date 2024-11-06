@@ -61,16 +61,35 @@ def create_overlay_pdf(field_values, overlay_path):
     c.drawString(230, 675, field_values.get("מספר תיק במס הכנסה", ""))
     c.drawString(134, 675, field_values.get("מספר תיק ניכויים", ""))
     c.drawString(65, 675, field_values.get("מספר טלפון", ""))
-    c.setFont("David", 11)  # Set font to 'David' with size 12
-    c.drawString(400, 675, reverse_hebrew_text(field_values.get("שם הנישום")))
-    c.drawString(350, 650, reverse_hebrew_text(field_values.get("כתובת העסק")))
+    c.setFont("David", fake.random_int(min=9, max=13))
+    c.drawString(
+        fake.random_int(min=350, max=440),
+        675,
+        reverse_hebrew_text(field_values.get("שם הנישום")),
+    )
+    c.setFont("David", fake.random_int(min=9, max=13))
+    c.drawString(
+        fake.random_int(min=265, max=340),
+        650,
+        reverse_hebrew_text(field_values.get("כתובת העסק")),
+    )
     c.setFont("David", 9)  # Set font to 'David' with size 12
     c.drawString(152, 650, reverse_hebrew_text(field_values.get("משרד פקיד השומה")))
     c.drawString(
         35, 650, reverse_hebrew_text(field_values.get("משרד פקיד השומה ניכויים"))
     )
-    c.setFont("David", 11)  # Set font to 'David' with size 12
+    array_of_strings = [
+        "Helvetica",
+        "Times-Roman",
+        "Courier",
+        "Helvetica-Bold",
+        "Times-Bold",
+    ]
+    c.setFont(
+        random.choice(array_of_strings), fake.random_int(min=9, max=12)
+    )  # Set font to 'David' with size 12
     c.drawString(430, 600, field_values.get("שם הצד הקשור"))
+    c.setFont("David", 11)  # Set font to 'David' with size 12
     c.drawString(280, 600, field_values.get('(TIN) מספר זיהוי לצרכי מס בחו"ל'))
     c.drawString(40, 600, reverse_hebrew_text(field_values.get("כתובת")))
     c.setFont("David", 12)  # Set font to 'David' with size 12
@@ -81,9 +100,24 @@ def create_overlay_pdf(field_values, overlay_path):
     c.drawString(40, 500, reverse_hebrew_text(field_values.get("1השיטה שננקטה")))
     c.drawString(40, 480, reverse_hebrew_text(field_values.get("2השיטה שננקטה")))
     c.setFont("David", 12)  # Set font to 'David' with size 12
-    c.drawString(200, 460, reverse_hebrew_text(field_values.get("1שיעור הרווחיות")))
-    c.drawString(200, 440, reverse_hebrew_text(field_values.get("2שיעור הרווחיות")))
-    c.drawString(200, 420, reverse_hebrew_text(field_values.get("סכום העסקה")))
+    c.setFont(random.choice(array_of_strings), fake.random_int(min=9, max=12))
+    c.drawString(
+        fake.random_int(min=100, max=300),
+        460,
+        reverse_hebrew_text(field_values.get("1שיעור הרווחיות")),
+    )
+    c.setFont(random.choice(array_of_strings), fake.random_int(min=9, max=12))
+    c.drawString(
+        fake.random_int(min=100, max=300),
+        440,
+        reverse_hebrew_text(field_values.get("2שיעור הרווחיות")),
+    )
+    c.setFont(random.choice(array_of_strings), fake.random_int(min=9, max=12))
+    c.drawString(
+        fake.random_int(min=100, max=300),
+        420,
+        reverse_hebrew_text(field_values.get("סכום העסקה")),
+    )
     c.setFont("David", 11)  # Set font to 'David' with size 12
     c.drawString(
         130 if field_values.get("העסקה המדווחת היא עסקה חד פעמית") else 95, 380, "x"
@@ -135,7 +169,7 @@ def generate_pdfs():
     folder_path = "files_generated"
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-    for i in range(1, 101):
+    for i in range(1, 2):
         name = fake.name()
         map_item = {
             "שנה": str(fake.year()),
