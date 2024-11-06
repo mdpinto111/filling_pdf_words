@@ -28,7 +28,7 @@ or
 python fill_ichour_tochavout_word.py
 
 Output:
-Filled PDF forms will be saved in the files_generated folder.
+Filled PDF forms will be saved in the files_generated or files_generated2 folders.
 An Excel file generated_data.xlsx will be created with all the generated data.
 Filled WORDS forms will be saved in the word_files folder.
 
